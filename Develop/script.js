@@ -24,8 +24,9 @@ var spec = false;
 var finalLen;
 
 var initVal = "";
+var scrambledPass = "";
 
-var numOfTypes = 0
+var numOfTypes = 0;
 
 const upper = [
   "A",
@@ -88,6 +89,19 @@ var lower = [
 const nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const special = ["!", "@", "#", "$", "%", "^", "&", "*", "?", "/"];
 
+//randomizes a string
+function randomizar() {
+  var newVal = (initVal = initVal.split(""));
+  var valLength = initVal.length - 1;
+  for (var i = valLength; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = initVal[i];
+    initVal[i] = initVal[j];
+    initVal[j] = tmp;
+  }
+  return (initVal = newVal.join(""));
+}
+randomizar();
 //  Goes through array and chooses random characters
 function goThrough(arr) {
   for (var i = 0; i < finalLen; ++i) {
@@ -97,17 +111,24 @@ function goThrough(arr) {
 }
 // Starts askng questions
 function questions() {
+  reset();
   passLength = prompt("Password length 8 - 128 characters");
   console.log(passLength);
-  if (passLength != "") {
+  if (
+    passLength != "" &&
+    passLength != NaN &&
+    passLength > 8 &&
+    passLength < 128
+  ) {
+    //pass length in a number
     passLength = parseInt(passLength);
     console.log(passLength);
-    passLength = Math.floor(passLength) / 4;
+    passLength = Math.floor(passLength / 4);
     console.log(passLength);
     finalLen = passLength;
     // Asks Upper Question
     addUpperQuest();
-  } else if ((passLength = NaN || passLength < 8 || passLength > 128)) {
+  } else {
     alert("Please enter a number between 8 and 128 characters ");
     questions();
   }
@@ -117,17 +138,17 @@ function questions() {
 // Upper Selection
 function addUpperQuest() {
   // Uppercase Quest
-  var upperSel = prompt("Would you like to use uppercase characters? y or n");
+  var upperSel = confirm("Would you like to use uppercase characters?");
   if (upperSel != null) {
-    if (upperSel.toLowerCase() == "y") {
+    if (upperSel) {
       up = true;
-      numOfTypes++
+      numOfTypes++;
       goThrough(upper);
       // Asks Lower Question
       addLowQuestion();
     } else {
-        // Asks Lower Question
-        addLowQuestion();
+      // Asks Lower Question
+      addLowQuestion();
     }
   }
   console.log(up);
@@ -135,10 +156,10 @@ function addUpperQuest() {
 // Lower Selection
 function addLowQuestion() {
   // lowercase Question
-  var lowSel = prompt("Would you like to use lowercase characters? y or n");
+  var lowSel = confirm("Would you like to use lowercase characters?");
 
   if (lowSel != null) {
-    if (lowSel.toLowerCase() === "y") {
+    if (lowSel) {
       low = true;
       goThrough(lower);
       // Asks Number Question
@@ -154,37 +175,35 @@ function addLowQuestion() {
 // Number Selection
 function addNumQuestion() {
   // // number Question
-  var numSel = prompt("Would you like to use numeric characters? y or n");
+  var numSel = confirm("Would you like to use numeric characters? y or n");
 
   if (numSel != null) {
-    if (numSel.toLowerCase() === "y") {
+    if (numSel) {
       num = true;
       goThrough(nums);
       // Asks Special Question
-      addSpecialQuestion()
+      addSpecialQuestion();
     } else {
-     // Asks Special Question
-     addSpecialQuestion()
+      // Asks Special Question
+      addSpecialQuestion();
     }
   }
   console.log(num);
 }
 
 // Special Selection
-function addSpecialQuestion(){
-// // special Question
-  var specSel = prompt("Would you like to use special characters? y or n");
+function addSpecialQuestion() {
+  // // special Question
+  var specSel = confirm("Would you like to use special characters?");
   if (specSel != null) {
-    if (specSel.toLowerCase() === "y") {
+    if (specSel) {
       spec = true;
-      goThrough(special)
-    } 
+      goThrough(special);
+    }
   }
   console.log(spec);
 }
-function makePassword(){
 
-}
 function writePassword() {
   questions();
 
@@ -193,19 +212,25 @@ function writePassword() {
   var passwordText = document.querySelector("#password");
   passwordText.value = password;
 }
-
+function reset() {
+  initVal = "";
+  scrambledPass = "";
+  numOfTypes = 0;
+}
 function generatePassword() {
-  
-  if(!up && !low && !num || !up && !low && !spec|| !up && !num&& !spec || !low && !num && !spec){
+  if (
+    (!up && !low && !num) ||
+    (!up && !low && !spec) ||
+    (!up && !num && !spec) ||
+    (!low && !num && !spec)
+  ) {
     alert("Please try again and enter more than one type of character");
     addUpperQuest();
-  }else{
-     console.log(initVal);
-     
   }
+  randomizar();
 
-
- 
+  console.log(initVal);
+  // scrambledPass = scrambledPass.shuffle();
   return initVal;
 }
 
