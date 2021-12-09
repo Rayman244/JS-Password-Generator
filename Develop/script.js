@@ -5,9 +5,9 @@
 // WHEN prompted for password criteria
 // X THEN I select which criteria to include in the password
 // WHEN prompted for the length of the password
-// THEN I choose a length of at least 8 characters and no more than 128 characters
+// X THEN I choose a length of at least 8 characters and no more than 128 characters
 // WHEN asked for character types to include in the password
-// THEN I confirm whether or not to include lowercase, uppercase, numeric, and/or special characters
+// X THEN I confirm whether or not to include lowercase, uppercase, numeric, and/or special characters
 // WHEN I answer each prompt
 // THEN my input should be validated and at least one character type should be selected
 // WHEN all prompts are answered
@@ -21,8 +21,9 @@ var up = false;
 var low = false;
 var num = false;
 var spec = false;
-var finalLen;
 
+var finalLen;
+var passLength;
 var initVal = "";
 var scrambledPass = "";
 
@@ -88,7 +89,14 @@ var lower = [
 
 const nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const special = ["!", "@", "#", "$", "%", "^", "&", "*", "?", "/"];
-
+var types = [upper, lower, nums, special];
+// counts number of ways
+function numWays(l) {
+  l = parseInt(l);
+  l = Math.floor(l / numOfTypes);
+  finalLen = l;
+  console.log(finalLen);
+}
 //randomizes a string
 function randomizar() {
   var newVal = (initVal = initVal.split(""));
@@ -101,7 +109,6 @@ function randomizar() {
   }
   return (initVal = newVal.join(""));
 }
-randomizar();
 //  Goes through array and chooses random characters
 function goThrough(arr) {
   for (var i = 0; i < finalLen; ++i) {
@@ -113,25 +120,26 @@ function goThrough(arr) {
 function questions() {
   reset();
   passLength = prompt("Password length 8 - 128 characters");
-  console.log(passLength);
+
   if (
     passLength != "" &&
     passLength != NaN &&
-    passLength > 8 &&
-    passLength < 128
+    passLength >= 8 &&
+    passLength <= 128
   ) {
     //pass length in a number
-    passLength = parseInt(passLength);
-    console.log(passLength);
-    passLength = Math.floor(passLength / 4);
-    console.log(passLength);
-    finalLen = passLength;
+    // passLength = parseInt(passLength);
+    // console.log(passLength);
+    // passLength = Math.floor(passLength / 4);
+    // console.log(passLength);
+    // finalLen = passLength;
     // Asks Upper Question
     addUpperQuest();
   } else {
     alert("Please enter a number between 8 and 128 characters ");
     questions();
   }
+
   console.log(passLength);
 }
 
@@ -143,7 +151,7 @@ function addUpperQuest() {
     if (upperSel) {
       up = true;
       numOfTypes++;
-      goThrough(upper);
+      // goThrough(upper);
       // Asks Lower Question
       addLowQuestion();
     } else {
@@ -161,7 +169,8 @@ function addLowQuestion() {
   if (lowSel != null) {
     if (lowSel) {
       low = true;
-      goThrough(lower);
+      numOfTypes++;
+      // goThrough(lower);
       // Asks Number Question
       addNumQuestion();
     } else {
@@ -175,12 +184,12 @@ function addLowQuestion() {
 // Number Selection
 function addNumQuestion() {
   // // number Question
-  var numSel = confirm("Would you like to use numeric characters? y or n");
+  var numSel = confirm("Would you like to use numeric characters?");
 
   if (numSel != null) {
     if (numSel) {
       num = true;
-      goThrough(nums);
+      numOfTypes++;
       // Asks Special Question
       addSpecialQuestion();
     } else {
@@ -198,10 +207,69 @@ function addSpecialQuestion() {
   if (specSel != null) {
     if (specSel) {
       spec = true;
-      goThrough(special);
+
+      // goThrough(special);
     }
   }
   console.log(spec);
+}
+//logic
+function creator() {
+  numWays(passLength);
+  if (numOfTypes >= 1) {
+    if (up && low && num && spec) {
+      goThrough(types[0]);
+      goThrough(types[1]);
+      goThrough(types[2]);
+      goThrough(types[3]);
+    } else if (up && low && num) {
+      goThrough(types[0]);
+      goThrough(types[1]);
+      goThrough(types[2]);
+    } else if (up && low && spec) {
+      goThrough(types[0]);
+      goThrough(types[1]);
+      goThrough(types[3]);
+    } else if (up && num && spec) {
+      goThrough(types[0]);
+      goThrough(types[2]);
+      goThrough(types[3]);
+    } else if (low && num && spec) {
+      goThrough(types[1]);
+      goThrough(types[2]);
+      goThrough(types[3]);
+    } else if (up && low) {
+      goThrough(types[0]);
+      goThrough(types[1]);
+    } else if (up && num) {
+      goThrough(types[0]);
+      goThrough(types[2]);
+    } else if (up && spec) {
+      goThrough(types[0]);
+      goThrough(types[3]);
+    } else if (low && num) {
+      goThrough(types[1]);
+      goThrough(types[2]);
+    } else if (low && spec) {
+      goThrough(types[1]);
+      goThrough(types[3]);
+    } else if (num && spec) {
+      goThrough(types[2]);
+      goThrough(types[3]);
+    } else if (up) {
+      finalLen = passLength;
+      goThrough(types[0]);
+    } else if (low) {
+      goThrough(types[1]);
+    } else if (num) {
+      goThrough(types[1]);
+    } else if (spec) {
+      goThrough(types[1]);
+    }
+  } else {
+    alert("please enter one or more character type");
+    addUpperQuest;
+  }
 }
 
 function writePassword() {
@@ -218,15 +286,11 @@ function reset() {
   numOfTypes = 0;
 }
 function generatePassword() {
-  if (
-    (!up && !low && !num) ||
-    (!up && !low && !spec) ||
-    (!up && !num && !spec) ||
-    (!low && !num && !spec)
-  ) {
-    alert("Please try again and enter more than one type of character");
-    addUpperQuest();
-  }
+  // if (numOfTypes < 1) {
+  //   alert("Please try again and enter more than one type of character");
+  //   addUpperQuest();
+  // }
+  creator();
   randomizar();
 
   console.log(initVal);
