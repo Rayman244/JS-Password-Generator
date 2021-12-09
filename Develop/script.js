@@ -1,20 +1,3 @@
-// Assignment Code
-// GIVEN I need a new, secure password
-// WHEN I click the button to generate a password
-// X THEN I am presented with a series of prompts for password criteria
-// WHEN prompted for password criteria
-// X THEN I select which criteria to include in the password
-// WHEN prompted for the length of the password
-// X THEN I choose a length of at least 8 characters and no more than 128 characters
-// WHEN asked for character types to include in the password
-// X THEN I confirm whether or not to include lowercase, uppercase, numeric, and/or special characters
-// WHEN I answer each prompt
-// THEN my input should be validated and at least one character type should be selected
-// WHEN all prompts are answered
-// THEN a password is generated that matches the selected criteria
-// WHEN the password is generated
-// THEN the password is either displayed in an alert or written to the page
-
 // Query selectors
 var generateBtn = document.querySelector("#generate");
 var up = false;
@@ -95,7 +78,6 @@ function numWays(l) {
   l = parseInt(l);
   l = Math.floor(l / numOfTypes);
   finalLen = l;
-  console.log(finalLen);
 }
 //randomizes a string
 function randomizar() {
@@ -114,11 +96,9 @@ function goThrough(arr) {
   for (var i = 0; i < finalLen; ++i) {
     initVal += arr[Math.floor(Math.random() * arr.length)];
   }
-  console.log(initVal);
 }
 // Starts askng questions
 function questions() {
-  reset();
   passLength = prompt("Password length 8 - 128 characters");
 
   if (
@@ -127,20 +107,12 @@ function questions() {
     passLength >= 8 &&
     passLength <= 128
   ) {
-    //pass length in a number
-    // passLength = parseInt(passLength);
-    // console.log(passLength);
-    // passLength = Math.floor(passLength / 4);
-    // console.log(passLength);
-    // finalLen = passLength;
     // Asks Upper Question
     addUpperQuest();
   } else {
     alert("Please enter a number between 8 and 128 characters ");
     questions();
   }
-
-  console.log(passLength);
 }
 
 // Upper Selection
@@ -151,7 +123,6 @@ function addUpperQuest() {
     if (upperSel) {
       up = true;
       numOfTypes++;
-      // goThrough(upper);
       // Asks Lower Question
       addLowQuestion();
     } else {
@@ -159,7 +130,6 @@ function addUpperQuest() {
       addLowQuestion();
     }
   }
-  console.log(up);
 }
 // Lower Selection
 function addLowQuestion() {
@@ -170,7 +140,7 @@ function addLowQuestion() {
     if (lowSel) {
       low = true;
       numOfTypes++;
-      // goThrough(lower);
+     
       // Asks Number Question
       addNumQuestion();
     } else {
@@ -178,7 +148,6 @@ function addLowQuestion() {
       addNumQuestion();
     }
   }
-  console.log(low);
 }
 
 // Number Selection
@@ -197,7 +166,6 @@ function addNumQuestion() {
       addSpecialQuestion();
     }
   }
-  console.log(num);
 }
 
 // Special Selection
@@ -207,11 +175,9 @@ function addSpecialQuestion() {
   if (specSel != null) {
     if (specSel) {
       spec = true;
-
-      // goThrough(special);
+      numOfTypes++
     }
   }
-  console.log(spec);
 }
 //logic
 function creator() {
@@ -273,6 +239,7 @@ function creator() {
 }
 
 function writePassword() {
+  reset()
   questions();
 
   // Write password to the #password input
@@ -286,15 +253,9 @@ function reset() {
   numOfTypes = 0;
 }
 function generatePassword() {
-  // if (numOfTypes < 1) {
-  //   alert("Please try again and enter more than one type of character");
-  //   addUpperQuest();
-  // }
   creator();
   randomizar();
 
-  console.log(initVal);
-  // scrambledPass = scrambledPass.shuffle();
   return initVal;
 }
 
